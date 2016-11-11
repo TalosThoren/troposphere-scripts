@@ -9,51 +9,64 @@ from troposphere.ec2 import VPC, Subnet, RouteTable, SubnetRouteTableAssociation
 template = Template()
 template.add_version('2010-09-09')
 
-# Add VPC to template
-BaseNetwork_VPC = template.add_resource(
-        VPC(
-            'VPC',
-            CidrBlock = '172.16.0.0/16',
-            Tags = Tags( Name='BaseNetwork' )
+def add_vpc( key='VPC', name='', cidr_block='172.16.0.0/16' ):
+    return template.add_resource(
+            VPC(
+                key,
+                CidrBlock = cidr_block,
+                Tags = Tags( Name=name )
+                )
             )
-        )
+
+def add_subnet( key, cidr_block, vpc, name='' ):
+    return template.add_resource(
+            Subnet(
+                key,
+                VpcId = Ref( vpc ),
+                CidrBlock = cidr_block,
+                Tags = Tags( Name=name )
+                )
+            )
+
+def add_route_table( key, vpc, name='' ):
+    return template.add_resource(
+            RouteTable(
+                key,
+                VpcId = Ref( vpc ),
+                Tags = Tags( Name=name )
+                )
+            )
+
+BaseNetworkVPC = add_vpc( name='BaseNetworkVPC' )
 
 # Create private subnet Route Table
-PrivateSubnetRT = template.add_resource(
-        RouteTable(
-            'PrivateRouteTable',
-            VpcId = Ref( BaseNetwork_VPC ),
-            Tags = Tags( Name='PrivateRT' )
-            )
+PrivateSubnetRT = add_route_table(
+        key = 'PrivateSubnetRT',
+        name = 'PrivateSubnetRT',
+        vpc = BaseNetworkVPC
         )
 
 # Create private subnet
-PrivateSubnet = template.add_resource(
-        Subnet(
-            'PrivateSubnet',
-            VpcId = Ref( BaseNetwork_VPC ),
-            CidrBlock = '172.16.0.0/21',
-            Tags = Tags( Name='PrivateSubnet' )
-            )
+PrivateSubnet = add_subnet(
+        key = 'PrivateSubnet',
+        name = 'PrivateSubnet',
+        cidr_block = '172.16.0.0/21',
+        vpc = BaseNetworkVPC
         )
 
 # Create public subnet Route Table
-PublicSubnetRT = template.add_resource(
-        RouteTable(
-            'PublicRouteTable',
-            VpcId = Ref( BaseNetwork_VPC ),
-            Tags = Tags( Name='PublicRT' )
-            )
+PublicSubnetRT = add_route_table(
+        key = 'PublicSubnetRT',
+        name = 'PublicSubnetRT',
+        vpc = BaseNetworkVPC
         )
 
 # Create public subnet
-PublicSubnet = template.add_resource(
-        Subnet(
-            'PublicSubnet',
-            VpcId = Ref( BaseNetwork_VPC ),
-            CidrBlock = '172.16.32.0/22',
-            Tags = Tags( Name='PublicSubnet' )
-            )
+PublicSubnet = add_subnet(
+        key = 'PulicSubnet',
+        name = 'PublicSubnet',
+        cidr_block = '172.16.32.0/22',
+        vpc = BaseNetworkVPC
         )
 
 # Output template
