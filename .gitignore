@@ -1,3 +1,6 @@
 # Vim generated files
 *~
 *.swp
+
+# Created template files
+*.template

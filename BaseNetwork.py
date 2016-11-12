@@ -37,6 +37,16 @@ def add_route_table( key, vpc, name='' ):
                 )
             )
 
+def add_route_table_association( key, route_table, subnet ):
+    return template.add_resource(
+            SubnetRouteTableAssociation(
+                key,
+                RouteTableId = Ref( route_table ),
+                SubnetId = Ref( subnet )
+                )
+            )
+
+# Create VPC
 BaseNetworkVPC = add_vpc( name='BaseNetworkVPC' )
 
 # Create private subnet Route Table
@@ -54,6 +64,13 @@ PrivateSubnet = add_subnet(
         vpc = BaseNetworkVPC
         )
 
+# Create private subnet route table association
+PrivateSubnetRTAssociation = add_route_table_association(
+        key = 'PrivateSubnetRouteTableAssociation',
+        route_table = PrivateSubnetRT,
+        subnet = PrivateSubnet 
+        )
+
 # Create public subnet Route Table
 PublicSubnetRT = add_route_table(
         key = 'PublicSubnetRT',
@@ -67,6 +84,13 @@ PublicSubnet = add_subnet(
         name = 'PublicSubnet',
         cidr_block = '172.16.32.0/22',
         vpc = BaseNetworkVPC
+        )
+
+# Create private subnet route table association
+PublicSubnetRTAssociation = add_route_table_association(
+        key = 'PublicSubnetRouteTableAssociation',
+        route_table = PublicSubnetRT,
+        subnet = PublicSubnet
         )
 
 # Output template
