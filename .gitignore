@@ -2,5 +2,8 @@
 *~
 *.swp
 
+# python generated files
+*.pyc
+
 # Created template files
 *.template
