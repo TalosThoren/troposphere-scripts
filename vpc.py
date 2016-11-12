@@ -15,6 +15,7 @@
 # Imports from troposphere
 from troposphere import Ref
 from troposphere import Tags
+from troposphere import GetAtt
 
 # EC2 resource classes
 from troposphere.ec2 import VPC
@@ -30,6 +31,8 @@ def add_vpc( template, key='VPC', name='', cidr_block='172.16.0.0/16' ):
             VPC(
                 key,
                 CidrBlock = cidr_block,
+                EnableDnsSupport = True,
+                EnableDnsHostnames = True,
                 Tags = Tags( Name=name )
                 )
             )
@@ -62,12 +65,5 @@ def add_route_table_association( template, key, route_table, subnet ):
                 )
             )
 
-def add_eip( template, key ):
-    return template.add_resource(
-            )
-
-def add_nat_gateway( template, key ):
-    return template.add_resource(
-            )
 #
 ## End of add resource functions ##
