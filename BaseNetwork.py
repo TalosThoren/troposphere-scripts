@@ -51,13 +51,13 @@ class BaseNetwork:
                 name = name
                 )
         self.__generate_az_network(
-                priv_cidr_block = '172.16.0.0/21',
-                pub_cidr_block = '172.16.32.0/22',
+                priv_cidr_block = '172.16.32.0/21',
+                pub_cidr_block = '172.16.0.0/22',
                 suffix='AZ1'
                 )
         self.__generate_az_network(
-                priv_cidr_block='172.16.4.0/21',
-                pub_cidr_block = '172.16.40.0/22',
+                priv_cidr_block='172.16.40.0/21',
+                pub_cidr_block = '172.16.4.0/22',
                 suffix='AZ2'
                 )
 
